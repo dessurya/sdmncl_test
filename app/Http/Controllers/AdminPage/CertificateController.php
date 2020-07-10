@@ -5,15 +5,15 @@ namespace App\Http\Controllers\AdminPage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Config;
-use App\Models\Page;
+use App\Models\Certificate;
 use Image;
 use File;
 use Str;
 
-class PageController extends Controller
+class CertificateController extends Controller
 {
 	private function accessConfig(){
-		$Config = Config::where('accesskey', 'pageAccessConfig')->first();
+		$Config = Config::where('accesskey', 'certificateAccessConfig')->first();
     	return json_decode($Config->config,true);
 	}
 
@@ -39,7 +39,9 @@ class PageController extends Controller
 	}
 
 	public function action(Request $Request){
-		if ($Request->action == 'view') {
+		if ($Request->action == 'add') {
+			return $this->view(null);
+		}else if ($Request->action == 'view') {
 			return $this->view($Request->id);
 		}else if ($Request->action == 'showingORhidden'){
 			return $this->showingORhidden($Request->id);
@@ -63,9 +65,27 @@ class PageController extends Controller
 
 	private function store($data,$file){
 		$data = (object)$data;
-		$store = Page::find($data->id);
+		if (empty($data->id)) {
+			if(Certificate::where('title_en', $data->title_en)->count() > 0){
+				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
+			}
+			if(Certificate::where('title_id', $data->title_id)->count() > 0){
+				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
+			}
+			$store = new Certificate;
+		}else{
+			if(Certificate::where('title_en', $data->title_en)->whereNotIn('id', [$data->id])->count() > 0){
+				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
+			}
+			if(Certificate::where('title_id', $data->title_id)->whereNotIn('id', [$data->id])->count() > 0){
+				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
+			}
+			$store = Certificate::find($data->id);
+		}
 		$store->title_en = $data->title_en;
 		$store->title_id = $data->title_id;
+		$store->slug_en = $data->title_en;
+		$store->slug_id = $data->title_id;
 		$store->meta_title_en = $data->meta_title_en;
 		$store->meta_title_id = $data->meta_title_id;
 		$store->content_en = $data->content_en;
@@ -77,13 +97,13 @@ class PageController extends Controller
 		if ($file) {
 			$directory = 'picture/';
 			if (!file_exists($directory)) { mkdir($directory, 0777); }
-			$directory .= 'page/';
+			$directory .= 'certificate/';
 			if (!file_exists($directory)) { mkdir($directory, 0777); }
 			if ($store->picture != null) {
 				File::delete($directory.$store->picture);
 			}
 			$salt = date('His');
-			$img_url = 'page-'.Str::slug($store->title,'_').'-'.$salt. '.' . $file->getClientOriginalExtension();
+			$img_url = 'certificate-'.Str::slug($store->title_en,'_').'-'.Str::slug($store->title_id,'_').'-'.$salt. '.' . $file->getClientOriginalExtension();
 			$upload1 = Image::make($file)->encode('data-url');
 			$upload1->save($directory.$img_url);
 			$store->picture = $directory.$img_url;
@@ -98,7 +118,7 @@ class PageController extends Controller
 	private function showingORhidden($id){
 		$id = explode('^', $id);
 		foreach ($id as $item) {
-			$store = Page::find($item);
+			$store = Certificate::find($item);
 			if ($store->status == 'SHOW') {
 				$store->status = 'HIDE';
 			}else{

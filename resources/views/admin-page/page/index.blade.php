@@ -9,6 +9,7 @@
 
 @section('js')
 <script type="text/javascript">
+	var urlActn = "{!! route($config['routeAct']) !!}";
 	$( document ).ready(function() {
 		var confDtTable = {};
 		confDtTable['dataTabOfId'] = '#table-data';
@@ -38,7 +39,6 @@
 
 	function actionButtonExe(data) {
 		var id = true;
-		var url = "{!! route($config['routeAct']) !!}";
 		if (data.select == true) {
 			id = getSelectedRowId({"target" : data.target, "multiple" : data.multiple});
 			if (id === false) { return false; }
@@ -50,10 +50,10 @@
 				"type" : "info",
 				"text" : "Are You Sure Do "+data.action+" On Selected Data?",
 				"data" : data,
-				"url" : url
+				"url" : urlActn
 			});
 		}else{
-			postData(data,url);
+			postData(data,urlActn);
 		}
 	}
 
@@ -131,6 +131,19 @@
 			callDataTabless(confDtTable);
 		}
 	}
+
+	$(document).on('submit', 'form.storeForm', function(){
+		var input = new FormData($(this)[0]);
+		pnotifyConfirm({
+			"title" : "Warning",
+			"type" : "info",
+			"text" : "Are You Sure Do Store This Data?",
+			"formData" : true,
+			"data" : new FormData($(this)[0]),
+			"url" : urlActn
+		});
+		return false;
+	});
 </script>
 @endsection
 

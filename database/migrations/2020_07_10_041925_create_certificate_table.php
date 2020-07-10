@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePageTable extends Migration
+class CreateCertificateTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreatePageTable extends Migration
      */
     public function up()
     {
-        Schema::create('mncl_page', function (Blueprint $table) {
+        Schema::create('mncl_certificate', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
             $table->string('title_en');
             $table->string('title_id');
+            $table->string('slug_en');
+            $table->string('slug_id');
             $table->text('content_en')->nullable();
             $table->text('content_id')->nullable();
             $table->text('picture')->nullable();
@@ -40,6 +41,6 @@ class CreatePageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mncl_page');
+        Schema::dropIfExists('mncl_certificate');
     }
 }

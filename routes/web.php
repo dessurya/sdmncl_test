@@ -27,10 +27,12 @@ Route::prefix('admin-page')->name('adminPage.')->group(function(){
 
 	Route::prefix('product')->name('product.')->group(function(){
 		Route::get('/', 'AdminPage\ProductController@index')->name('index');
+		Route::post('/action', 'AdminPage\ProductController@action')->name('action');
 	});
 
 	Route::prefix('certificate')->name('certificate.')->group(function(){
 		Route::get('/', 'AdminPage\CertificateController@index')->name('index');
+		Route::post('/action', 'AdminPage\CertificateController@action')->name('action');
 	});
 
 	Route::prefix('news')->name('news.')->group(function(){

@@ -64,12 +64,32 @@
 				});
 			}
 
+			function postFormData(data,url) {
+				$.ajax({
+					url: url,
+					processData:false,
+					contentType:false,
+					type: 'post',
+					dataType: 'json',
+					data: data,
+					beforeSend: function() {
+						$('#loading-page').show();
+					},
+					success: function(data) {
+						responsePostData(data);
+						$('#loading-page').hide();
+					}
+				});
+			}
+
 			function responsePostData(data) {
 				if (data.formPrepare == true) { formPrepare(data); }
-				if (data.tableReload) { reloadDataTabless(); }
+				if (data.reloadDataTabless == true) { reloadDataTabless(); }
+				if (data.pnotify == true) { pnotify({"title":"Warning","type":"error","text":data.msg}); }
 			}
 
 			function formPrepare(data) {
+				$(data.target).find('button').removeAttr('disabled');
 				$(data.target).find('input').removeAttr('readonly');
 				$(data.target).find('textarea').removeAttr('readonly');
 				$(data.target).find('select').removeAttr('readonly');
@@ -81,13 +101,22 @@
 					$('[name='+target+']').attr('readonly', 'true');
 				});
 
-				$.each(data.data, function(key, val){
-					if (key != 'picture') {
-						$(data.target+' [name='+key+']').val(val);
-					}else if (key == 'picture' && (val != null && val != "" && val != undefined && val.length > 0)) {
-						alert('ada gambar');
-					}
-				});
+				if (data.data == null) {
+					$(data.target).find('input').val('');
+					$(data.target).find('textarea').val('');
+					$('picture').hide();
+					$('picture img').attr('src', '');
+					$(data.target).find('input[name=action]').val('store');
+				}else{
+					$.each(data.data, function(key, val){
+						if (key != 'picture') {
+							$(data.target+' [name='+key+']').val(val);
+						}else if (key == 'picture' && (val != null && val != "" && val != undefined && val.length > 0)) {
+							$('picture').show();
+							$('picture img').attr('src', '{!! asset('') !!}'+val);
+						}
+					});
+				}
 
 				$('#collapseTwo').collapse('show');
 			}
@@ -122,7 +151,11 @@
 						]
 					}
 				}).get().on('pnotify.confirm', function(){
-					postData(data.data,data.url);
+					if (data.formData == true) {
+						postFormData(data.data,data.url);
+					}else{
+						postData(data.data,data.url);
+					}
 				});
 			}
 		</script>

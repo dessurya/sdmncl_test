@@ -1,16 +1,8 @@
 <div>
-    <form id="pageForm" class="storeForm">
+    <form id="certificateForm" class="storeForm">
     	<input type="hidden" class="form-control" name="id" id="id">
     	<input type="hidden" class="form-control" name="action" id="action" value="store">
     	<div class="container">
-    		<div class="row">
-    			<div class="col">
-			    	<div class="form-group">
-			    		<label for="title">Title</label>
-			    		<input maxlength="155" readonly type="text" class="form-control" name="title" id="title" aria-describedby="title">
-			    	</div>
-    			</div>
-    		</div>
     		<div class="row">
     			<div class="col">
 			    	<div class="form-group">

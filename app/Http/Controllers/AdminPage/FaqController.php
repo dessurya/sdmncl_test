@@ -5,16 +5,16 @@ namespace App\Http\Controllers\AdminPage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Config;
-use App\Models\Certificate;
+use App\Models\Faq;
 use Image;
 use File;
 use Str;
 use Auth;
 
-class CertificateController extends Controller
+class FaqController extends Controller
 {
 	private function accessConfig(){
-		$Config = Config::where('accesskey', 'certificateAccessConfig')->first();
+		$Config = Config::where('accesskey', 'faqAccessConfig')->first();
     	return json_decode($Config->config,true);
 	}
 
@@ -60,55 +60,35 @@ class CertificateController extends Controller
 			"target" => $form['target'],
 			"required" => $form['required'],
 			"readonly" => $form['readonly'],
-			"data" => Certificate::find($id)
+			"data" => Faq::find($id)
 		];
 	}
 
 	private function store($data,$file){
 		$data = (object)$data;
 		if (empty($data->id)) {
-			if(Certificate::where('title_en', $data->title_en)->count() > 0){
-				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
+			if(Faq::where('question_en', $data->question_en)->count() > 0){
+				return [ 'pnotify' => true, "msg" => "question_en sudah ada" ];
 			}
-			if(Certificate::where('title_id', $data->title_id)->count() > 0){
-				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
+			if(Faq::where('question_id', $data->question_id)->count() > 0){
+				return [ 'pnotify' => true, "msg" => "question_id sudah ada" ];
 			}
-			$store = new Certificate;
+			$store = new Faq;
 		}else{
-			if(Certificate::where('title_en', $data->title_en)->whereNotIn('id', [$data->id])->count() > 0){
-				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
+			if(Faq::where('question_en', $data->question_en)->whereNotIn('id', [$data->id])->count() > 0){
+				return [ 'pnotify' => true, "msg" => "question_en sudah ada" ];
 			}
-			if(Certificate::where('title_id', $data->title_id)->whereNotIn('id', [$data->id])->count() > 0){
+			if(Faq::where('question_id', $data->question_id)->whereNotIn('id', [$data->id])->count() > 0){
 				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
 			}
-			$store = Certificate::find($data->id);
+			$store = Faq::find($data->id);
 		}
-		$store->title_en = $data->title_en;
-		$store->title_id = $data->title_id;
-		$store->slug_en = $data->title_en;
-		$store->slug_id = $data->title_id;
-		$store->meta_title_en = $data->meta_title_en;
-		$store->meta_title_id = $data->meta_title_id;
-		$store->content_en = $data->content_en;
-		$store->content_id = $data->content_id;
-		$store->meta_description_en = $data->meta_description_en;
-		$store->meta_description_id = $data->meta_description_id;
-		$store->meta_keyword_en = $data->meta_keyword_en;
-		$store->meta_keyword_id = $data->meta_keyword_id;
-		if ($file) {
-			$directory = 'picture/';
-			if (!file_exists($directory)) { mkdir($directory, 0777); }
-			$directory .= 'certificate/';
-			if (!file_exists($directory)) { mkdir($directory, 0777); }
-			if ($store->picture != null) {
-				File::delete($directory.$store->picture);
-			}
-			$salt = date('His');
-			$img_url = 'certificate-'.Str::slug($store->title_en,'_').'-'.Str::slug($store->title_id,'_').'-'.$salt. '.' . $file->getClientOriginalExtension();
-			$upload1 = Image::make($file)->encode('data-url');
-			$upload1->save($directory.$img_url);
-			$store->picture = $directory.$img_url;
-		}
+		$store->question_en = $data->question_en;
+		$store->question_id = $data->question_id;
+		$store->slug_en = $data->question_en;
+		$store->slug_id = $data->question_id;
+		$store->answer_en = $data->answer_en;
+		$store->answer_id = $data->answer_id;
 		$store->create_by = Auth()->guard('users')->user()->name;
 		$store->save();
 		$ret = $this->view($store->id);
@@ -119,7 +99,7 @@ class CertificateController extends Controller
 	private function showingORhidden($id){
 		$id = explode('^', $id);
 		foreach ($id as $item) {
-			$store = Certificate::find($item);
+			$store = Faq::find($item);
 			if ($store->status == 'SHOW') {
 				$store->status = 'HIDE';
 			}else{

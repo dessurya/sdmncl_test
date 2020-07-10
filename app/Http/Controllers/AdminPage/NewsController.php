@@ -5,16 +5,16 @@ namespace App\Http\Controllers\AdminPage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Config;
-use App\Models\Certificate;
+use App\Models\News;
 use Image;
 use File;
 use Str;
 use Auth;
 
-class CertificateController extends Controller
+class NewsController extends Controller
 {
-	private function accessConfig(){
-		$Config = Config::where('accesskey', 'certificateAccessConfig')->first();
+    private function accessConfig(){
+		$Config = Config::where('accesskey', 'newsAccessConfig')->first();
     	return json_decode($Config->config,true);
 	}
 
@@ -60,28 +60,28 @@ class CertificateController extends Controller
 			"target" => $form['target'],
 			"required" => $form['required'],
 			"readonly" => $form['readonly'],
-			"data" => Certificate::find($id)
+			"data" => News::find($id)
 		];
 	}
 
 	private function store($data,$file){
 		$data = (object)$data;
 		if (empty($data->id)) {
-			if(Certificate::where('title_en', $data->title_en)->count() > 0){
+			if(News::where('title_en', $data->title_en)->count() > 0){
 				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
 			}
-			if(Certificate::where('title_id', $data->title_id)->count() > 0){
+			if(News::where('title_id', $data->title_id)->count() > 0){
 				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
 			}
-			$store = new Certificate;
+			$store = new News;
 		}else{
-			if(Certificate::where('title_en', $data->title_en)->whereNotIn('id', [$data->id])->count() > 0){
+			if(News::where('title_en', $data->title_en)->whereNotIn('id', [$data->id])->count() > 0){
 				return [ 'pnotify' => true, "msg" => "title_en sudah ada" ];
 			}
-			if(Certificate::where('title_id', $data->title_id)->whereNotIn('id', [$data->id])->count() > 0){
+			if(News::where('title_id', $data->title_id)->whereNotIn('id', [$data->id])->count() > 0){
 				return [ 'pnotify' => true, "msg" => "title_id sudah ada" ];
 			}
-			$store = Certificate::find($data->id);
+			$store = News::find($data->id);
 		}
 		$store->title_en = $data->title_en;
 		$store->title_id = $data->title_id;
@@ -98,13 +98,13 @@ class CertificateController extends Controller
 		if ($file) {
 			$directory = 'picture/';
 			if (!file_exists($directory)) { mkdir($directory, 0777); }
-			$directory .= 'certificate/';
+			$directory .= 'news/';
 			if (!file_exists($directory)) { mkdir($directory, 0777); }
 			if ($store->picture != null) {
 				File::delete($directory.$store->picture);
 			}
 			$salt = date('His');
-			$img_url = 'certificate-'.Str::slug($store->title_en,'_').'-'.Str::slug($store->title_id,'_').'-'.$salt. '.' . $file->getClientOriginalExtension();
+			$img_url = 'news-'.Str::slug($store->title_en,'_').'-'.Str::slug($store->title_id,'_').'-'.$salt. '.' . $file->getClientOriginalExtension();
 			$upload1 = Image::make($file)->encode('data-url');
 			$upload1->save($directory.$img_url);
 			$store->picture = $directory.$img_url;
@@ -119,7 +119,7 @@ class CertificateController extends Controller
 	private function showingORhidden($id){
 		$id = explode('^', $id);
 		foreach ($id as $item) {
-			$store = Certificate::find($item);
+			$store = News::find($item);
 			if ($store->status == 'SHOW') {
 				$store->status = 'HIDE';
 			}else{

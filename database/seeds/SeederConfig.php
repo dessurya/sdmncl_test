@@ -106,6 +106,70 @@ class SeederConfig extends Seeder
                         "required" : ["title_en","title_id","meta_title_en","meta_title_id"]
                     }
                 }'
+            ],
+            [
+                "accesskey" => "newsAccessConfig",
+                "config" => '{ 
+                    "index" : {
+                        "title" : "News Configuration",
+                        "accesskey" : "newsAccessConfig",
+                        "form" : "news-form",
+                        "routeAct" : "adminPage.news.action"
+                    },
+                    "table" : {
+                        "config" : [
+                            {"data":"title_en","name":"title_en","searchable":true,"orderable":true},
+                            {"data":"title_id","name":"title_id","searchable":true,"orderable":true},
+                            {"data":"status","name":"status","searchable":true,"orderable":true},
+                            {"data":"create_by","name":"create_by","searchable":true,"orderable":true}
+                        ],
+                        "model" : "News"
+                    },
+                    "action" : {
+                        "button" : [
+                            {"title" : "Add Data", "action" : "add", "select" : "false", "confirm" : "false", "multiple" : "false", "icon" : "plus-square-o"},
+                            {"title" : "View and Update Data", "action" : "view", "select" : "true", "confirm" : "false", "multiple" : "false", "icon" : "folder-open-o"},
+                            {"title" : "Showing/Hidden", "action" : "showingORhidden", "select" : "true", "confirm" : "true", "multiple" : "true", "icon" : "power-off"}
+                        ]
+                    },
+                    "form" : {
+                        "target" : "#newsForm",
+                        "readonly" : [],
+                        "required" : ["title_en","title_id","meta_title_en","meta_title_id"]
+                    }
+                }'
+            ],
+            [
+                "accesskey" => "faqAccessConfig",
+                "config" => '{ 
+                    "index" : {
+                        "title" : "FAQ Configuration",
+                        "accesskey" : "faqAccessConfig",
+                        "form" : "faq-form",
+                        "routeAct" : "adminPage.faq.action"
+                    },
+                    "table" : {
+                        "config" : [
+                            {"data":"question_en","name":"question_en","searchable":true,"orderable":true},
+                            {"data":"question_id","name":"question_id","searchable":true,"orderable":true},
+                            {"data":"status","name":"status","searchable":true,"orderable":true},
+                            {"data":"create_by","name":"create_by","searchable":true,"orderable":true}
+                        ],
+                        "model" : "Faq"
+                    },
+                    "action" : {
+                        "button" : [
+                            {"title" : "Add Data", "action" : "add", "select" : "false", "confirm" : "false", "multiple" : "false", "icon" : "plus-square-o"},
+                            {"title" : "View and Update Data", "action" : "view", "select" : "true", "confirm" : "false", "multiple" : "false", "icon" : "folder-open-o"},
+                            {"title" : "Showing/Hidden", "action" : "showingORhidden", "select" : "true", "confirm" : "true", "multiple" : "true", "icon" : "power-off"}
+                        ]
+                    },
+                    "form" : {
+                        "target" : "#faqForm",
+                        "readonly" : [],
+                        "required" : ["question_en","question_id","answer_en","answer_id"]
+                    }
+                }'
             ]
         ];
 

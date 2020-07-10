@@ -54,20 +54,6 @@ class SeederPage extends Seeder
         		"title_id" => "FAQ",
         		"meta_title_en" => "FAQ",
         		"meta_title_id" => "FAQ"
-        	],
-        	[
-        		"title" => "Contact Us",
-        		"title_en" => "Contact Us",
-        		"title_id" => "Contact Us",
-        		"meta_title_en" => "Contact Us",
-        		"meta_title_id" => "Contact Us"
-        	],
-        	[
-        		"title" => "Share Price",
-        		"title_en" => "Share Price",
-        		"title_id" => "Share Price",
-        		"meta_title_en" => "Share Price",
-        		"meta_title_id" => "Share Price"
         	]
         ];
 

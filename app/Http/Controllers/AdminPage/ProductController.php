@@ -9,6 +9,7 @@ use App\Models\Product;
 use Image;
 use File;
 use Str;
+use Auth;
 
 class ProductController extends Controller
 {
@@ -59,7 +60,7 @@ class ProductController extends Controller
 			"target" => $form['target'],
 			"required" => $form['required'],
 			"readonly" => $form['readonly'],
-			"data" => Certificate::find($id)
+			"data" => Product::find($id)
 		];
 	}
 
@@ -108,7 +109,7 @@ class ProductController extends Controller
 			$upload1->save($directory.$img_url);
 			$store->picture = $directory.$img_url;
 		}
-		$store->create_by = 'Saya';
+		$store->create_by = Auth()->guard('users')->user()->name;
 		$store->save();
 		$ret = $this->view($store->id);
 		$ret['reloadDataTabless'] = true;
@@ -124,7 +125,7 @@ class ProductController extends Controller
 			}else{
 				$store->status = 'SHOW';
 			}
-			$store->create_by = 'Saya';
+			$store->create_by = Auth()->guard('users')->user()->name;
 			$store->save();
 		}
 		return [

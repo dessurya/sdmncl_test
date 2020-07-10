@@ -43,11 +43,19 @@
 		<script type="text/javascript" src="{{ asset('asset/DataTables/datatables.min.js') }}"></script>
 		<script type="text/javascript">
 			var datatable;
+			
 			$(document).on('click', '#navigasi ul.nav li a', function(){
 				var url = $(this).attr('href');
 				location.replace(url);
 			});
+
+			$(document).on('click', '#actionButton #logout', function(){
+				var url = $(this).data('url');
+				location.replace(url);
+			});
+			
 			$.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
+
 			function postData(data,url) {
 				$.ajax({
 					url: url,
@@ -101,22 +109,20 @@
 					$('[name='+target+']').attr('readonly', 'true');
 				});
 
-				if (data.data == null) {
-					$(data.target).find('input').val('');
-					$(data.target).find('textarea').val('');
-					$('picture').hide();
-					$('picture img').attr('src', '');
-					$(data.target).find('input[name=action]').val('store');
-				}else{
-					$.each(data.data, function(key, val){
-						if (key != 'picture') {
-							$(data.target+' [name='+key+']').val(val);
-						}else if (key == 'picture' && (val != null && val != "" && val != undefined && val.length > 0)) {
-							$('picture').show();
-							$('picture img').attr('src', '{!! asset('') !!}'+val);
-						}
-					});
-				}
+				$('picture').hide();
+				$('picture img').attr('src', '');
+				$(data.target).find('input').val(null);
+				$(data.target).find('textarea').val(null);
+				$(data.target).find('input[name=action]').val('store');
+				
+				$.each(data.data, function(key, val){
+					if (key != 'picture') {
+						$(data.target+' [name='+key+']').val(val);
+					}else if (key == 'picture' && (val != null && val != "" && val != undefined && val.length > 0)) {
+						$('picture').show();
+						$('picture img').attr('src', '{!! asset('') !!}'+val);
+					}
+				});
 
 				$('#collapseTwo').collapse('show');
 			}

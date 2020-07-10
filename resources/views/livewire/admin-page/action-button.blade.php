@@ -11,11 +11,8 @@
 				<i class="fa fa-{{ $item['icon'] }}"></i>
 			</button>
 			@endforeach
-			<button title="Sign Out" 
-			data-action="logout"
-			data-select="false"
-			data-confirm="false"
-			data-multiple="false"
+			<button title="Sign Out" id="logout" 
+			data-url="{{ route('adminPage.logout') }}"
 			type="button" class="btn btn-secondary">
 				<i class="fa fa-sign-out"></i>
 			</button>

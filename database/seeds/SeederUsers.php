@@ -14,18 +14,6 @@ class SeederUsers extends Seeder
     {
 		$store = [
 			[
-				"name" => "adam surya des",
-				"email" => "fourline66@gmail.com",
-				"password" => "asdasd",
-				"role_id" => 1,
-			],
-			[
-				"name" => "adam surya des",
-				"email" => "dessurya02@gmail.com",
-				"password" => "asdasd",
-				"role_id" => 2,
-			],
-			[
 				"name" => "admin",
 				"email" => "admin001@mail.seed",
 				"password" => "admin001",
